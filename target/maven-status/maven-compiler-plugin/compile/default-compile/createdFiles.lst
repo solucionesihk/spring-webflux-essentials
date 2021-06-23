@@ -1,0 +1,14 @@
+academy\devdojo\webflux\SpringWebfluxEssentialsApplication.class
+academy\devdojo\webflux\exception\CustomAttributes.class
+academy\devdojo\webflux\exception\ErrorExceptionHandler.class
+academy\devdojo\webflux\service\impl\AnimeServiceImpl.class
+academy\devdojo\webflux\domain\ErrorClientResponse$ErrorClientResponseBuilder.class
+academy\devdojo\webflux\service\AnimeService.class
+academy\devdojo\webflux\domain\ErrorClientResponse.class
+academy\devdojo\webflux\repository\AnimeRepository.class
+academy\devdojo\webflux\domain\Anime.class
+academy\devdojo\webflux\util\ErrorUtil.class
+academy\devdojo\webflux\domain\Anime$AnimeBuilder.class
+academy\devdojo\webflux\expose\Router.class
+academy\devdojo\webflux\expose\handler\AnimeHandler.class
+academy\devdojo\webflux\exception\GlobalExceptionHandler.class
