@@ -21,7 +21,7 @@ public class Router {
                 RouterFunctions
                 .route(GET("/"), handler::getAnimeList)
                 .andRoute(GET("/{id}"), handler::getAnimeById)
-                .andRoute(POST("/"), handler::newAnime)
+                .andRoute(POST("/save"), handler::newAnime)
                 .andRoute(POST("/saveAll"), handler::saveAllAnime)
                 .andRoute(PUT("/"), handler::updateAnime)
                 .andRoute(DELETE("/{id}"), handler::deleteAnime)

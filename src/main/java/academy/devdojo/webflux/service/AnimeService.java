@@ -1,7 +1,5 @@
 package academy.devdojo.webflux.service;
 
-import java.util.List;
-
 import academy.devdojo.webflux.domain.Anime;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,9 +11,11 @@ public interface AnimeService {
 
     public Mono<Anime> findById(int id);
     
+    public Mono<Anime> findByName (String name);
+        
     public Mono<Anime> save(Anime anime);
-
-    public Flux<Anime> saveAll(List<Anime> animes);
+    
+    public Mono<Anime> saveValidationWhitoutException(Anime anime);
 
     public Mono<Void> update(Anime anime);
 

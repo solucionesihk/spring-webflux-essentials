@@ -7,4 +7,7 @@ import reactor.core.publisher.Mono;
 public interface AnimeRepository extends ReactiveCrudRepository<Anime, Integer> {
 
     Mono<Anime> findById(int id);
+    
+    Mono<Anime> findFirstByName(String name);  
+
 }

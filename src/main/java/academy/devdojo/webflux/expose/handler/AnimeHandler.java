@@ -6,15 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import academy.devdojo.webflux.exception.ErrorExceptionHandler;
 import academy.devdojo.webflux.service.AnimeService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.ParallelFlux;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +18,6 @@ public class AnimeHandler {
 
     @Autowired
 	private AnimeService animeService;
-    @Autowired
-	private ErrorExceptionHandler errorExceptionHandler;
 	
 	public AnimeHandler (AnimeService animeService) {
 		this.animeService = animeService;
@@ -50,7 +44,7 @@ public class AnimeHandler {
 	public Mono<ServerResponse> saveAllAnime(ServerRequest request){
                 Flux<Anime> results = request.bodyToMono(Anime[].class)
                         .flatMapMany(Flux::fromArray)
-                        .flatMap(b -> animeService.save(b));
+                        .flatMap(b -> animeService.saveValidationWhitoutException(b));
                         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(results, Object.class);
 	}
         

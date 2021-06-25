@@ -1,14 +1,12 @@
 package academy.devdojo.webflux.service.impl;
 
 import io.netty.util.internal.StringUtil;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import academy.devdojo.webflux.domain.Anime;
@@ -22,7 +20,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AnimeServiceImpl implements AnimeService {
 
-	@Autowired
+    @Autowired
     private AnimeRepository animeRepository;
 
     @Override
@@ -37,19 +35,32 @@ public class AnimeServiceImpl implements AnimeService {
 
     @Override
     public Mono<Anime> save(Anime anime) {
-        return animeRepository.save(anime);
+        return this.findByName(anime.getName())
+                .doOnNext(this::validateExisting)
+                .switchIfEmpty(Mono.just(anime))
+                .doOnNext(this::throwResponseStatusExceptionWhenEmptyName)
+                .flatMap(animeRepository::save);
     }
-
+    
     @Override
-    @Transactional
-    public Flux<Anime> saveAll(List<Anime> animes) {
-        return animeRepository.saveAll(animes)
-            .doOnNext(this::throwResponseStatusExceptionWhenEmptyName);
+    public Mono<Anime> saveValidationWhitoutException(Anime anime) {
+        return this.findByName(anime.getName())
+                .filter(a->a.getName()!=anime.getName())
+                .defaultIfEmpty(anime)
+                .filter(a->!a.getName().isBlank() && !a.getName().isEmpty())
+                .flatMap(animeRepository::save);
     }
-
+    
     private void throwResponseStatusExceptionWhenEmptyName(Anime anime){
         if(StringUtil.isNullOrEmpty(anime.getName())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid Name");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Not null or empty, please invalid Name");
+        }
+    }
+    
+    private void validateExisting(Anime anime){
+        Mono<Anime> animes = animeRepository.findFirstByName(anime.getName());
+        if(animes!=null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Data encontrada en la BD");
         }
     }
 
@@ -59,10 +70,15 @@ public class AnimeServiceImpl implements AnimeService {
             .flatMap(animeRepository::save)
             .then();
     }
-
+    
     @Override
     public Mono<Void> delete(int id) {
         return findById(id)
             .flatMap(animeRepository::delete);
+    }
+
+    @Override
+    public Mono<Anime> findByName(String name) {
+        return animeRepository.findFirstByName(name);
     }
 }
